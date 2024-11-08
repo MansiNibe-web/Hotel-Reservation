@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 class CustomerBase(BaseModel):
@@ -9,6 +9,7 @@ class CustomerBase(BaseModel):
     traveling_from: Optional[str] = None
     isForeign: bool = False
     purpose: str
+    room_id:int
 
     class Config:
         from_attributes = True  # Pydantic v2 compatibility
@@ -38,18 +39,22 @@ class RoomCreate(BaseModel):
     is_gallery: Optional[bool] = False
 
 
+
 class CustomerCreateRoomHobby(BaseModel):
     name: str
     age: int
-    email: str
+    email: EmailStr
     phone_number: str  # Primary key will be used here
     traveling_from: Optional[str] = None
     isForeign: bool = False
     purpose: str
     room: RoomCreate
     hotel: HotelCreate
+    
 
 class CustomerResponse(CustomerBase):
+    id:int
+
     class Config:
         from_attributes = True  # Pydantic v2 compatibility
 

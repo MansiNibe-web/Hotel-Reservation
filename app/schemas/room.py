@@ -3,7 +3,7 @@ from typing import Optional
 
 class RoomCreate(BaseModel):
     hotel_id: int
-    name: str
+    isSmokingFriendly: bool
     room_number: str
     room_type: Optional[str] = None
     price: float
@@ -13,7 +13,7 @@ class RoomCreate(BaseModel):
     is_gallery: Optional[bool] = False
 
 class RoomUpdate(BaseModel):
-    name: Optional[str] = None
+    isSmokingFriendly: Optional[bool] = None
     room_number: Optional[str] = None
     room_type: Optional[str] = None
     price: Optional[float] = None
@@ -21,6 +21,10 @@ class RoomUpdate(BaseModel):
     is_cooled: Optional[bool] = None
     bed_size: Optional[str] = None
     is_gallery: Optional[bool] = None
+
+
+class RoomUpdateResponse(BaseModel):
+    message: str
 
 class RoomResponse(RoomCreate):
     id: int

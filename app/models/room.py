@@ -7,7 +7,7 @@ class Room(Base):
     
     id = Column(Integer, primary_key=True, index=True)
     hotel_id = Column(Integer, ForeignKey("hotels.id"))
-    name = Column(String(255), nullable=False)  
+    isSmokingFriendly = Column(Boolean, nullable=False)  
     room_number = Column(String(255), index=True)
     room_type = Column(String(255))  # Type of room, such as "Single", "Double", etc.
     price = Column(Float)

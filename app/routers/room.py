@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.models.room import Room
-from app.schemas.room import RoomCreate, RoomResponse
+from app.schemas.room import RoomCreate, RoomResponse,RoomUpdateResponse
 from app.database import get_db
 from app import crud, schemas, database
 
@@ -27,13 +27,13 @@ def get_room_by_id(room_id: int, db: Session = Depends(get_db)):
     return db_room
 
 # Update a room
-@router.put("/rooms/{room_id}", response_model=schemas.RoomResponse)
+@router.put("/rooms/{room_id}", response_model=schemas.RoomUpdateResponse)
 def update_room(room_id: int, room: schemas.RoomUpdate, db: Session = Depends(get_db)):
     db_room = crud.update_room(db=db, room_id=room_id, room=room)
     if db_room is None:
         raise HTTPException(status_code=404, detail="Room not found")
-    room_name = room.name
-    return {"message": f" Room {room_name} updated successfully !"}
+    
+    return {"message": " Room updated successfully !"}
 
 # Delete a room
 @router.delete("/rooms/{room_id}")
@@ -41,7 +41,7 @@ def delete_room(room_id: int, db: Session = Depends(get_db)):
     room = db.query(Room).filter(Room.id == room_id).first()
     if not room:
         raise HTTPException(status_code=404, detail="Room not found") 
-    room_name = room.name
+    
     db.delete(room)
     db.commit()    
-    return {"message": f"Room '{room_name}' deleted successfully!"}
+    return {"message": "Room deleted successfully!"}

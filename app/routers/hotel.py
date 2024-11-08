@@ -1,15 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from app.auth.dependencies import role_required
 from app.models.hotel import Hotel
-from app.schemas.hotel import HotelResponse, HotelCreate, HotelUpdate  # Add other necessary imports
+from app.schemas.hotel import HotelResponse, HotelCreate, HotelUpdate ,hotelLocationResponse # Add other necessary imports
 from app.database import get_db
-from .. import crud, database 
+from app import crud, database 
+from typing import List
 
 router = APIRouter()
 
+@router.get("/admin-only")
+def get_admin_data(current_role: str = Depends(role_required("admin"))):
+    return {"message": "This is a restricted admin-only route."}
+
 @router.post("/hotels/", response_model=HotelResponse)
 def create_hotel(hotel: HotelCreate, db: Session = Depends(get_db)):
-    db_hotel = db.query(Hotel).filter(Hotel.branch == hotel.branch).first()
+    db_hotel = db.query(Hotel).filter(Hotel.locality == hotel.locality).first()
     if db_hotel:
         raise HTTPException(status_code=400, detail="Hotel already exists")
     new_hotel = Hotel(**hotel.dict())  # Create a new hotel using HotelCreate model data
@@ -60,6 +66,14 @@ def get_hotels(db: Session = Depends(get_db)):
 def get_hotel(hotel_id: int, db: Session = Depends(get_db)):
     from . import models  #importing here to avoid circular imports 
     db_hotel = crud.get_hotel(db=db, hotel_id=hotel_id)  # Call to your CRUD function
+    if db_hotel is None:
+        raise HTTPException(status_code=404, detail="Hotel not found")
+    return db_hotel
+
+
+@router.get("/hotels/location/{location}", response_model=List[hotelLocationResponse])
+def get_hotelbylocation(location: str, db: Session = Depends(get_db)):
+    db_hotel = crud.get_hotelbylocation(db=db, branch=location)
     if db_hotel is None:
         raise HTTPException(status_code=404, detail="Hotel not found")
     return db_hotel

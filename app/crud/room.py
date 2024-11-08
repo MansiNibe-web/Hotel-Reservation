@@ -7,7 +7,7 @@ from app.models.room import Room
 def create_room(db: Session, room: schemas.RoomCreate):
     db_room = models.Room(
         hotel_id=room.hotel_id,
-        name=room.name,
+        isSmokingFriendly=room.isSmokingFriendly,
         room_number=room.room_number,
         room_type=room.room_type,
         price=room.price,
@@ -32,8 +32,8 @@ def get_room_by_id(db: Session, room_id: int):
 def update_room(db: Session, room_id: int, room: schemas.RoomUpdate):
     db_room = db.query(models.Room).filter(models.Room.id == room_id).first()
     if db_room:
-        if room.name:
-            db_room.name = room.name
+        if room.isSmokingFriendly:
+            db_room.isSmokingFriendly = room.isSmokingFriendly
         if room.room_number:
             db_room.room_number = room.room_number
         if room.room_type:

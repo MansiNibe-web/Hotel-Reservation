@@ -29,6 +29,12 @@ def get_hotel(db: Session, hotel_id: int):
     from app import schemas  
     return db.query(models.Hotel).filter(models.Hotel.id == hotel_id).first()
 
+def get_hotelbylocation(db: Session, branch: str):
+    from . import models
+    from app import schemas  
+    return db.query(models.Hotel).filter(models.Hotel.branch == branch).all()
+
+
 def update_hotel(db: Session, hotel_id: int, hotel: schemas.HotelUpdate):
     from app import schemas  
     db_hotel = db.query(models.Hotel).filter(models.Hotel.id == hotel_id).first()
